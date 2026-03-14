@@ -1,11 +1,16 @@
 services:
   finance-tracker-database:
-    build:
-      context: database
+    container_name: finance-tracker-database
+    image: mongo:8.2
+    ports: 
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: admin
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "${DB_PORT:-5432}:5432"
+      - ./database/scripts:/docker-entrypoint-initdb.d:ro
+      - mongo_data:/data/db
 
 volumes:
-  postgres_data:
+  mongo_data:
