@@ -8,6 +8,7 @@ import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pt.pmr.financetracking.domain.entities.Category;
+import pt.pmr.financetracking.domain.entities.CategoryFilter;
 import pt.pmr.financetracking.domain.entities.fake.FakeCategories;
 import pt.pmr.financetracking.domain.repositories.CategoryRepository;
 
@@ -22,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         initArgs = @ResourceArg(name = MongoTestResource.PORT, value = "27017"))
 class MongoCategoryRepositoryTestIT {
 
+    private static final CategoryFilter EMPTY_FILTER = CategoryFilter.builder().build();
     @Inject
     CategoryRepository repository;
 
@@ -36,7 +38,7 @@ class MongoCategoryRepositoryTestIT {
 
     @Test
     void fetchAll_whenCollectionIsEmpty_returnsEmptyList() {
-        List<Category> result = repository.fetchAll().collect().asList().await().indefinitely();
+        List<Category> result = repository.fetchAll(EMPTY_FILTER).collect().asList().await().indefinitely();
 
         assertThat(result).isEmpty();
     }
@@ -47,7 +49,7 @@ class MongoCategoryRepositoryTestIT {
         repository.create(FakeCategories.CAR).await().indefinitely();
         repository.create(FakeCategories.HOUSE).await().indefinitely();
 
-        List<Category> result = repository.fetchAll().collect().asList().await().indefinitely();
+        List<Category> result = repository.fetchAll(EMPTY_FILTER).collect().asList().await().indefinitely();
 
         assertThat(result).hasSize(3);
         assertThat(result).extracting(Category::code)

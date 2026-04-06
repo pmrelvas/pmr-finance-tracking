@@ -10,11 +10,13 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import lombok.RequiredArgsConstructor;
 import org.jboss.resteasy.reactive.ResponseStatus;
 import pt.pmr.financetracking.api.dtos.request.CategoryApiRequestDto;
 import pt.pmr.financetracking.api.dtos.response.CategoryApiResponseDto;
+import pt.pmr.financetracking.domain.entities.CategoryFilter;
 import pt.pmr.financetracking.domain.usecases.CreateCategoryUseCase;
 import pt.pmr.financetracking.domain.usecases.ReadCategoryUseCase;
 import pt.pmr.financetracking.domain.usecases.UpdateCategoryUseCase;
@@ -32,8 +34,11 @@ public class CategoryController {
     private final UpdateCategoryUseCase updateCategoryUseCase;
 
     @GET
-    public Multi<CategoryApiResponseDto> fetchAll() {
-        return readCategoryUseCase.executeFindAll()
+    public Multi<CategoryApiResponseDto> fetchAll(@QueryParam("searchTerm") String searchTerm) {
+        CategoryFilter filter = CategoryFilter.builder()
+                .searchTerm(searchTerm)
+                .build();
+        return readCategoryUseCase.executeFindAll(filter)
                 .map(CategoryApiResponseDto::new);
     }
 

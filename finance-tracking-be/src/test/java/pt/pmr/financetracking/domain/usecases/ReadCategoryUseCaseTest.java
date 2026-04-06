@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pt.pmr.financetracking.domain.entities.Category;
+import pt.pmr.financetracking.domain.entities.CategoryFilter;
 import pt.pmr.financetracking.domain.exceptions.EntityNotFoundException;
 import pt.pmr.financetracking.domain.repositories.CategoryRepository;
 
@@ -27,13 +28,18 @@ class ReadCategoryUseCaseTest {
     @InjectMocks
     ReadCategoryUseCase useCase;
 
-    private static final Category CATEGORY = Category.builder().id("1").code("FOOD").displayName("Food").build();
+    private static final Category CATEGORY = Category.builder()
+            .id("1")
+            .code("FOOD")
+            .displayName("Food")
+            .build();
 
     @Test
     void executeFindAll_shouldReturnAllCategories() {
-        when(categoryRepository.fetchAll()).thenReturn(Multi.createFrom().items(CATEGORY));
+        CategoryFilter filter = CategoryFilter.builder().build();
+        when(categoryRepository.fetchAll(filter)).thenReturn(Multi.createFrom().items(CATEGORY));
 
-        var result = useCase.executeFindAll().collect().asList().await().indefinitely();
+        var result = useCase.executeFindAll(filter).collect().asList().await().indefinitely();
 
         assertEquals(List.of(CATEGORY), result);
     }

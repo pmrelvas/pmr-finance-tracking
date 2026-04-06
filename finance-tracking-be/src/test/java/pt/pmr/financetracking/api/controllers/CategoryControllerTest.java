@@ -7,6 +7,7 @@ import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import org.junit.jupiter.api.Test;
 import pt.pmr.financetracking.domain.entities.Category;
+import pt.pmr.financetracking.domain.entities.CategoryFilter;
 import pt.pmr.financetracking.domain.entities.fake.FakeCategories;
 import pt.pmr.financetracking.domain.exceptions.EntityNotFoundException;
 import pt.pmr.financetracking.domain.usecases.CreateCategoryUseCase;
@@ -35,7 +36,9 @@ class CategoryControllerTest {
 
     @Test
     void fetchAll_shouldReturn200WithAllCategories() {
-        when(readCategoryUseCase.executeFindAll())
+        CategoryFilter filter = CategoryFilter.builder().build();
+
+        when(readCategoryUseCase.executeFindAll(filter))
                 .thenReturn(Multi.createFrom().items(FakeCategories.FOOD, FakeCategories.CAR));
 
         given()
@@ -53,8 +56,33 @@ class CategoryControllerTest {
     }
 
     @Test
+    void fetchAll_shouldReturn200WithAllCategoriesAndSearchTerm() {
+        CategoryFilter filter = CategoryFilter.builder()
+                .searchTerm("batatas")
+                .build();
+
+        when(readCategoryUseCase.executeFindAll(filter))
+                .thenReturn(Multi.createFrom().items(FakeCategories.FOOD, FakeCategories.CAR));
+
+        given()
+                .when().get("/api/v1/categories?searchTerm=batatas")
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("$", hasSize(2))
+                .body("[0].id", equalTo(FakeCategories.FOOD.id()))
+                .body("[0].code", equalTo(FakeCategories.FOOD.code()))
+                .body("[0].displayName", equalTo(FakeCategories.FOOD.displayName()))
+                .body("[1].id", equalTo(FakeCategories.CAR.id()))
+                .body("[1].code", equalTo(FakeCategories.CAR.code()))
+                .body("[1].displayName", equalTo(FakeCategories.CAR.displayName()));
+    }
+
+    @Test
     void fetchAll_whenEmpty_shouldReturn200WithEmptyList() {
-        when(readCategoryUseCase.executeFindAll())
+        CategoryFilter filter = CategoryFilter.builder().build();
+
+        when(readCategoryUseCase.executeFindAll(filter))
                 .thenReturn(Multi.createFrom().empty());
 
         given()

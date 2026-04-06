@@ -9,6 +9,7 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import pt.pmr.financetracking.data.models.CategoryDocument;
 import pt.pmr.financetracking.domain.entities.Category;
+import pt.pmr.financetracking.domain.entities.CategoryFilter;
 import pt.pmr.financetracking.domain.repositories.CategoryRepository;
 
 import java.time.Instant;
@@ -18,8 +19,14 @@ import java.util.Optional;
 public class MongoCategoryRepository implements ReactivePanacheMongoRepository<CategoryDocument>, CategoryRepository {
 
     @Override
-    public Multi<Category> fetchAll() {
-        return streamAll().onItem().transform(CategoryDocument::toEntity);
+    public Multi<Category> fetchAll(CategoryFilter filter) {
+        if (filter.searchTerm() == null || filter.searchTerm().isBlank()) {
+            return streamAll().onItem().transform(CategoryDocument::toEntity);
+        }
+
+        Document query = new Document("displayName",
+                new Document("$regex", filter.searchTerm()).append("$options", "i"));
+        return stream(query, new Document()).onItem().transform(CategoryDocument::toEntity);
     }
 
     @Override
