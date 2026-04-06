@@ -3,14 +3,12 @@ package pt.pmr.financetracking.domain.entities;
 import lombok.Builder;
 
 import java.time.Instant;
-import java.util.List;
 
 @Builder(toBuilder = true)
-public record Category(
+public record SubCategory(
     String id,
     String code,
     String displayName,
-    List<SubCategory> subCategories,
     Instant createdAt,
     Instant updatedAt
 ) {
