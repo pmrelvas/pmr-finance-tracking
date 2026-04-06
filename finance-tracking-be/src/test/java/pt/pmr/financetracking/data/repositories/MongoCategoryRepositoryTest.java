@@ -32,10 +32,6 @@ class MongoCategoryRepositoryTestIT {
         repository.deleteAll().await().indefinitely();
     }
 
-    // -------------------------------------------------------------------------
-    // fetchAll
-    // -------------------------------------------------------------------------
-
     @Test
     void fetchAll_whenCollectionIsEmpty_returnsEmptyList() {
         List<Category> result = repository.fetchAll(EMPTY_FILTER).collect().asList().await().indefinitely();
@@ -55,10 +51,6 @@ class MongoCategoryRepositoryTestIT {
         assertThat(result).extracting(Category::code)
                 .containsExactlyInAnyOrder("FOOD", "CAR", "HOUSE");
     }
-
-    // -------------------------------------------------------------------------
-    // fetchById
-    // -------------------------------------------------------------------------
 
     @Test
     void fetchById_whenCategoryExists_returnsCategory() {
@@ -86,10 +78,6 @@ class MongoCategoryRepositoryTestIT {
         assertThat(result).isEmpty();
     }
 
-    // -------------------------------------------------------------------------
-    // create
-    // -------------------------------------------------------------------------
-
     @Test
     void create_persistsCategoryAndReturnsIt() {
         Category created = repository.create(FakeCategories.FOOD).await().indefinitely();
@@ -110,10 +98,6 @@ class MongoCategoryRepositoryTestIT {
         assertThat(fetched).isPresent();
         assertThat(fetched.get().code()).isEqualTo(FakeCategories.CAR.code());
     }
-
-    // -------------------------------------------------------------------------
-    // update
-    // -------------------------------------------------------------------------
 
     @Test
     void update_whenCategoryExists_returnsUpdatedCategory() {
