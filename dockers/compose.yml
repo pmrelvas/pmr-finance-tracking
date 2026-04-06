@@ -5,12 +5,28 @@ services:
     ports: 
       - "27017:27017"
     environment:
-      MONGO_INITDB_DATABASE: admin
+      MONGO_INITDB_DATABASE: finance_tracker
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
       - ./database/scripts:/docker-entrypoint-initdb.d:ro
       - mongo_data:/data/db
+
+  liquibase:
+    build:
+      context: ./database
+      dockerfile: liquibase.Dockerfile
+    environment:
+      - LIQUIBASE_SECURE_PARSING=false
+    command: >
+      --changelog-file=db.changelog-master.xml
+      --url=mongodb://root:password@finance-tracker-database:27017/finance_tracker?authSource=admin
+      --driver=liquibase.ext.mongodb.database.MongoClientDriver
+      update
+    volumes:
+      - ./database:/liquibase/changelog
+    depends_on:
+      - finance-tracker-database
 
 volumes:
   mongo_data:
