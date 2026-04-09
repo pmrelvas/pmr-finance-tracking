@@ -10,9 +10,21 @@
 
   <changeSet id="001" author="pmrelvas">
     <mongodb:createCollection collectionName="categories"/>
-        <mongodb:createIndex collectionName="categories">
-            <mongodb:keys>{code: 1}</mongodb:keys>
-            <mongodb:options>{unique: true, name: "idx_category_code"}</mongodb:options>
-        </mongodb:createIndex>
+    <mongodb:createIndex collectionName="categories">
+      <mongodb:keys>{code: 1}</mongodb:keys>
+      <mongodb:options>{unique: true, name: "idx_category_code"}</mongodb:options>
+    </mongodb:createIndex>
+    <mongodb:createIndex collectionName="categories">
+      <mongodb:keys>{displayName: 1}</mongodb:keys>
+      <mongodb:options>{name: "idx_category_displayName"}</mongodb:options>
+    </mongodb:createIndex>
+    <mongodb:createIndex collectionName="categories">
+      <mongodb:keys>{"subCategories.code": 1}</mongodb:keys>
+      <mongodb:options>{name: "idx_category_subCategories_code"}</mongodb:options>
+    </mongodb:createIndex>
+    <mongodb:createIndex collectionName="categories">
+      <mongodb:keys>{"subCategories.displayName": 1}</mongodb:keys>
+      <mongodb:options>{name: "idx_category_subCategories_displayName"}</mongodb:options>
+    </mongodb:createIndex>
   </changeSet>
 </databaseChangeLog>

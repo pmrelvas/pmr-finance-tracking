@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mongodb="http://www.liquibase.org/xml/ns/mongodb"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+         http://www.liquibase.org/xml/ns/mongodb
+         http://www.liquibase.org/xml/ns/mongodb/liquibase-mongodb-latest.xsd">
+
+  <changeSet id="002" author="pmrelvas">
+    <mongodb:createCollection collectionName="expenses"/>
+    <mongodb:createIndex collectionName="expenses">
+      <mongodb:keys>{operationDate: -1}</mongodb:keys>
+      <mongodb:options>{name: "idx_expense_operationDate"}</mongodb:options>
+    </mongodb:createIndex>
+    <mongodb:createIndex collectionName="expenses">
+      <mongodb:keys>{value: -1}</mongodb:keys>
+      <mongodb:options>{name: "idx_expense_value"}</mongodb:options>
+    </mongodb:createIndex>
+    <mongodb:createIndex collectionName="expenses">
+      <mongodb:keys>{type: 1}</mongodb:keys>
+      <mongodb:options>{name: "idx_expense_type"}</mongodb:options>
+    </mongodb:createIndex>
+    <mongodb:createIndex collectionName="expenses">
+      <mongodb:keys>{"category.code": 1}</mongodb:keys>
+      <mongodb:options>{name: "idx_expense_category_code"}</mongodb:options>
+    </mongodb:createIndex>
+    <mongodb:createIndex collectionName="expenses">
+      <mongodb:keys>{"subCategory.code": 1}</mongodb:keys>
+      <mongodb:options>{name: "idx_expense_subCategory_code"}</mongodb:options>
+    </mongodb:createIndex>
+    <mongodb:createIndex collectionName="expenses">
+      <mongodb:keys>{source: 1}</mongodb:keys>
+      <mongodb:options>{name: "idx_expense_source"}</mongodb:options>
+    </mongodb:createIndex>
+  </changeSet>
+</databaseChangeLog>
