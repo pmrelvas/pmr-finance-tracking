@@ -1,0 +1,94 @@
+<div class="sub-categories-page">
+  <div class="page-header">
+    <h1>Sub-categories</h1>
+    <p-button
+      label="Add Sub-category"
+      icon="pi pi-plus"
+      [disabled]="!selectedCategory()"
+      (onClick)="openCreateDialog()"
+    />
+  </div>
+
+  <div class="category-selector">
+    <p-select
+      [options]="categories()"
+      [ngModel]="selectedCategory()"
+      (ngModelChange)="onCategoryChange($event)"
+      optionLabel="displayName"
+      placeholder="Select a category..."
+      [loading]="loadingCategories()"
+      fluid
+    />
+  </div>
+
+  @if (selectedCategory()) {
+    <p-table
+      [value]="subCategories()"
+      [loading]="loadingSubCategories()"
+      [paginator]="true"
+      [rows]="10"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      [globalFilterFields]="['code', 'displayName']"
+      dataKey="id"
+      styleClass="p-datatable-striped"
+      #dt
+    >
+      <ng-template #caption>
+        <div class="table-caption">
+          <input
+            pInputText
+            type="text"
+            placeholder="Search sub-categories..."
+            (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+          />
+        </div>
+      </ng-template>
+
+      <ng-template #header>
+        <tr>
+          <th pSortableColumn="code">Code <p-sortIcon field="code" /></th>
+          <th pSortableColumn="displayName">Display Name <p-sortIcon field="displayName" /></th>
+          <th pSortableColumn="createdAt">Created At <p-sortIcon field="createdAt" /></th>
+          <th></th>
+        </tr>
+      </ng-template>
+
+      <ng-template #body let-subCategory>
+        <tr>
+          <td><p-tag [value]="subCategory.code" severity="secondary" /></td>
+          <td>{{ subCategory.displayName }}</td>
+          <td>{{ subCategory.createdAt | date: dateFormats.timestamp }}</td>
+          <td class="actions-cell">
+            <p-button
+              icon="pi pi-pencil"
+              [rounded]="true"
+              [text]="true"
+              severity="secondary"
+              (onClick)="openEditDialog(subCategory)"
+            />
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template #emptymessage>
+        <tr>
+          <td colspan="4" class="empty-message">No sub-categories found.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  } @else {
+    <div class="empty-state">
+      <i class="pi pi-filter empty-state-icon"></i>
+      <p>Select a category to view its sub-categories.</p>
+    </div>
+  }
+</div>
+
+@if (selectedCategory()) {
+  <pmr-sub-category-write-dialog
+    [(visible)]="dialogVisible"
+    [categoryId]="selectedCategory()!.id"
+    [subCategory]="selectedSubCategory()"
+    (subCategorySaved)="onSubCategorySaved($event)"
+  />
+}

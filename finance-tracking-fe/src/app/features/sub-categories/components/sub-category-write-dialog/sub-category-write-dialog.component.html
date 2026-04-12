@@ -1,0 +1,36 @@
+<p-dialog
+  [header]="dialogHeader()"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '32rem' }"
+  [(visible)]="visible"
+  (onShow)="onShow()"
+>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="sub-category-form">
+    <div class="field-group">
+      <p-floatlabel variant="on" fluid>
+        <input pInputText id="code" formControlName="code" />
+        <label for="code">Code</label>
+      </p-floatlabel>
+      @if (form.controls.code.invalid && form.controls.code.touched) {
+        <span class="field-error">Code is required</span>
+      }
+    </div>
+
+    <div class="field-group">
+      <p-floatlabel variant="on" fluid>
+        <input pInputText id="displayName" formControlName="displayName" />
+        <label for="displayName">Display Name</label>
+      </p-floatlabel>
+      @if (form.controls.displayName.invalid && form.controls.displayName.touched) {
+        <span class="field-error">Display name is required</span>
+      }
+    </div>
+
+    <div class="form-actions">
+      <p-button label="Cancel" severity="secondary" [outlined]="true" (onClick)="close()" />
+      <p-button [label]="submitLabel()" icon="pi pi-check" type="submit" [loading]="saving()" />
+    </div>
+  </form>
+</p-dialog>
