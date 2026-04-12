@@ -1,0 +1,29 @@
+.sub-category-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-top: 0.5rem;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  input {
+    width: 100%;
+  }
+}
+
+.field-error {
+  font-size: 0.75rem;
+  color: var(--p-form-field-invalid-border-color);
+  padding-left: 0.25rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}

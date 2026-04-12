@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { Router } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { InputText } from 'primeng/inputtext';
 import { Tag } from 'primeng/tag';
 import { Button } from 'primeng/button';
+import { Tooltip } from 'primeng/tooltip';
 import { Category } from '../../models/category.model';
 import { CategoryService } from '../../services/category.service';
 import { DATE_FORMATS } from '../../../../core/constants/date-formats';
@@ -11,13 +13,14 @@ import { CategoryWriteDialogComponent } from '../../components/category-write-di
 
 @Component({
   selector: 'pmr-categories-list',
-  imports: [TableModule, InputText, Tag, DatePipe, Button, CategoryWriteDialogComponent],
+  imports: [TableModule, InputText, Tag, DatePipe, Button, Tooltip, CategoryWriteDialogComponent],
   templateUrl: './categories-list.component.html',
   styleUrl: './categories-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoriesListComponent implements OnInit {
   private readonly categoryService = inject(CategoryService);
+  private readonly router = inject(Router);
 
   protected readonly dateFormats = DATE_FORMATS;
 
@@ -28,6 +31,10 @@ export class CategoriesListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCategories();
+  }
+
+  protected navigateToSubCategories(category: Category): void {
+    this.router.navigate(['/sub-categories'], { queryParams: { categoryId: category.id } });
   }
 
   protected openCreateDialog(): void {
