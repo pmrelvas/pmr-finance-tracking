@@ -13,5 +13,6 @@ export class NavbarComponent {
   protected readonly items: MenuItem[] = [
     { label: 'Categories', routerLink: '/categories' },
     { label: 'Sub-categories', routerLink: '/sub-categories' },
+    { label: 'Expenses', routerLink: '/expenses' },
   ];
 }

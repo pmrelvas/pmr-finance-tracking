@@ -1,0 +1,124 @@
+<p-dialog
+  [header]="dialogHeader()"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '36rem' }"
+  [(visible)]="visible"
+  (onShow)="onShow()"
+>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="expense-form">
+
+    <div class="form-row">
+      <div class="field-group">
+        <p-floatlabel variant="on" fluid>
+          <p-datepicker
+            inputId="operationDate"
+            formControlName="operationDate"
+            [showIcon]="true"
+            dateFormat="yy-mm-dd"
+            fluid
+          />
+          <label for="operationDate">Operation Date</label>
+        </p-floatlabel>
+        @if (form.controls.operationDate.invalid && form.controls.operationDate.touched) {
+          <span class="field-error">Operation date is required</span>
+        }
+      </div>
+
+      <div class="field-group">
+        <p-floatlabel variant="on" fluid>
+          <p-select
+            inputId="type"
+            formControlName="type"
+            [options]="typeOptions"
+            optionLabel="label"
+            optionValue="value"
+            fluid
+          />
+          <label for="type">Type</label>
+        </p-floatlabel>
+        @if (form.controls.type.invalid && form.controls.type.touched) {
+          <span class="field-error">Type is required</span>
+        }
+      </div>
+    </div>
+
+    <div class="field-group">
+      <p-floatlabel variant="on" fluid>
+        <input pInputText id="description" formControlName="description" />
+        <label for="description">Description</label>
+      </p-floatlabel>
+      @if (form.controls.description.invalid && form.controls.description.touched) {
+        <span class="field-error">Description is required</span>
+      }
+    </div>
+
+    <div class="form-row">
+      <div class="field-group">
+        <p-floatlabel variant="on" fluid>
+          <p-inputnumber
+            inputId="value"
+            formControlName="value"
+            mode="decimal"
+            [minFractionDigits]="2"
+            [maxFractionDigits]="2"
+            fluid
+          />
+          <label for="value">Value</label>
+        </p-floatlabel>
+        @if (form.controls.value.invalid && form.controls.value.touched) {
+          <span class="field-error">Value is required</span>
+        }
+      </div>
+
+      <div class="field-group">
+        <p-floatlabel variant="on" fluid>
+          <input pInputText id="source" formControlName="source" />
+          <label for="source">Source</label>
+        </p-floatlabel>
+        @if (form.controls.source.invalid && form.controls.source.touched) {
+          <span class="field-error">Source is required</span>
+        }
+      </div>
+    </div>
+
+    <div class="field-group">
+      <p-floatlabel variant="on" fluid>
+        <p-select
+          inputId="categoryId"
+          formControlName="categoryId"
+          [options]="categories()"
+          optionLabel="displayName"
+          optionValue="id"
+          (onChange)="onCategoryChange($event.value)"
+          fluid
+        />
+        <label for="categoryId">Category</label>
+      </p-floatlabel>
+      @if (form.controls.categoryId.invalid && form.controls.categoryId.touched) {
+        <span class="field-error">Category is required</span>
+      }
+    </div>
+
+    <div class="field-group">
+      <p-floatlabel variant="on" fluid>
+        <p-select
+          inputId="subCategoryId"
+          formControlName="subCategoryId"
+          [options]="availableSubCategories()"
+          optionLabel="displayName"
+          optionValue="id"
+          [disabled]="!selectedCategoryId()"
+          fluid
+        />
+        <label for="subCategoryId">Sub-category (optional)</label>
+      </p-floatlabel>
+    </div>
+
+    <div class="form-actions">
+      <p-button label="Cancel" severity="secondary" [outlined]="true" (onClick)="close()" />
+      <p-button [label]="submitLabel()" icon="pi pi-check" type="submit" [loading]="saving()" />
+    </div>
+  </form>
+</p-dialog>
