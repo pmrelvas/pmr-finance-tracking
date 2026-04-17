@@ -1,0 +1,92 @@
+<div class="expenses-page">
+  <div class="expenses-header">
+    <h1>Expenses</h1>
+    <p-button label="Add Expense" icon="pi pi-plus" (onClick)="openCreateDialog()" />
+  </div>
+
+  <p-table
+    [value]="expenses()"
+    [loading]="loading()"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [globalFilterFields]="['description', 'source', 'category.displayName', 'subCategory.displayName']"
+    dataKey="id"
+    styleClass="p-datatable-striped"
+    #dt
+  >
+    <ng-template #caption>
+      <div class="table-caption">
+        <input
+          pInputText
+          type="text"
+          placeholder="Search expenses..."
+          (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+        />
+      </div>
+    </ng-template>
+
+    <ng-template #header>
+      <tr>
+        <th pSortableColumn="operationDate">
+          Date <p-sortIcon field="operationDate" />
+        </th>
+        <th pSortableColumn="description">
+          Description <p-sortIcon field="description" />
+        </th>
+        <th pSortableColumn="value">
+          Value <p-sortIcon field="value" />
+        </th>
+        <th pSortableColumn="type">
+          Type <p-sortIcon field="type" />
+        </th>
+        <th pSortableColumn="category.displayName">
+          Category <p-sortIcon field="category.displayName" />
+        </th>
+        <th>Sub-category</th>
+        <th pSortableColumn="source">
+          Source <p-sortIcon field="source" />
+        </th>
+        <th></th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-expense>
+      <tr>
+        <td>{{ expense.operationDate | date: 'yyyy-MM-dd' }}</td>
+        <td>{{ expense.description }}</td>
+        <td class="value-cell">{{ expense.value | number: '1.2-2' }}</td>
+        <td>
+          <p-tag
+            [value]="expense.type"
+            [severity]="expense.type === 'DEBIT' ? 'danger' : 'success'"
+          />
+        </td>
+        <td>{{ expense.category.displayName }}</td>
+        <td>{{ expense.subCategory?.displayName ?? '—' }}</td>
+        <td>{{ expense.source }}</td>
+        <td class="actions-cell">
+          <p-button
+            icon="pi pi-pencil"
+            [rounded]="true"
+            [text]="true"
+            severity="secondary"
+            (onClick)="openEditDialog(expense)"
+          />
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="8" class="empty-message">No expenses found.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<pmr-expense-write-dialog
+  [(visible)]="dialogVisible"
+  [expense]="selectedExpense()"
+  (expenseSaved)="onExpenseSaved($event)"
+/>
